@@ -1,24 +1,24 @@
 from Abstracto.Lexema import * 
 from Abstracto.Numero import * 
-from Abstracto.Funciones import * 
-from Aritmetica import * 
-from Trigonometria import *
+from Instrucciones.Aritmetica import *
+from Texto import * 
+from Instrucciones.Trigonometria import *
 from Error import * 
 
 Reservados = {
-    'ROPERACIONES'      : 'Operaciones', 
-    'ROPERACION'        : 'Operacion', 
-    'RVALOR1'           : 'Valor1', 
-    'RVALOR2'           : 'Valor2', 
-    'RSUMA'             : 'Suma', 
-    'RRESTA'            : 'Resta',
-    'RMULTIPLICACION'   : 'Multiplicacion',
-    'RDIVISON'          : 'Division',
-    'RMOD'              : 'Mod',
-    'RPOTENCIA'         : 'Potencia',
-    'RSENO'             : 'Seno',
-    'RCOSENO'           : 'Coseno',
-    'RTANGENTE'         : 'Tangente',
+    'ROPERACIONES'      : 'operaciones', 
+    'ROPERACION'        : 'operacion', 
+    'RVALOR1'           : 'valor1', 
+    'RVALOR2'           : 'valor2', 
+    'RSUMA'             : 'suma', 
+    'RRESTA'            : 'resta',
+    'RMULTIPLICACION'   : 'multiplicacion',
+    'RDIVISON'          : 'division',
+    'RMOD'              : 'mod',
+    'RPOTENCIA'         : 'potencia',
+    'RSENO'             : 'seno',
+    'RCOSENO'           : 'coseno',
+    'RTANGENTE'         : 'tangente',
     'COMA'              : ',', 
     'PUNTO'             : '.', 
     'DPUNTOS'           : ':', 
@@ -34,7 +34,7 @@ global n_linea
 global n_columna 
 global instrucciones 
 global lista_lexemas 
- 
+
 n_linea = 1 
 n_columna = 1 
 lista_lexemas = [] 
@@ -48,13 +48,12 @@ def instruccion(cadena):
     lexema = '' 
     puntero = 0 
  
- 
     while cadena: 
         char = cadena[puntero] 
         puntero += 1 
  
-        if char == "\"":       #! leemos nuestra cadena y al encontrar " que habre empieza a crear el token 
-            lexema, cadena = armar_lexema(cadena[puntero:]) 
+        if char == '"':       #! leemos nuestra cadena y al encontrar " que habre empieza a crear el token 
+            lexema, cadena = armar_lexema(cadena[puntero:])
             if lexema and cadena: 
                 n_columna += 1 
                 #Armar lexema como clase 
@@ -140,7 +139,7 @@ def armar_numero(cadena):
             if char != ',': #! si no es una coma lo agregamos al numero 
                 numero += char 
     return None, None 
- 
+
 def operar(): 
     global lista_lexemas 
     global instrucciones 
@@ -148,25 +147,23 @@ def operar():
     n1 = '' 
     n2 = '' 
  
-    text = '' 
- 
     while lista_lexemas: 
         lexema = lista_lexemas.pop(0) 
-        if lexema.operar(None) == 'Operacion': 
+        if lexema.operar(None) == 'operacion': 
             operacion = lista_lexemas.pop(0) 
-        elif lexema.operar(None) == 'Valor1': 
+        elif lexema.operar(None) == 'valor1': 
             n1 = lista_lexemas.pop(0) 
             if n1.operar(None) == '[': 
-                n1 = operar() 
-        elif lexema.operar(None) ==  'Valor2': 
+                n1 = operar()
+        elif lexema.operar(None) ==  'valor2': 
             n2 = lista_lexemas.pop(0) 
             if n2.operar(None) == '[': 
                 n2 = operar() 
  
- 
         if operacion and n1 and n2: 
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}: {n2.getColumna()}') 
- 
+        elif operacion and n1 and (operacion.operar(None) == 'seno' or operacion.operar(None) == 'coseno' or operacion.operar(None) == 'tangente'):
+            return Trigonometria(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
     return None 
  
 def operar_(): 
@@ -182,4 +179,20 @@ def operar_():
  
 def getErrores(): 
     global lista_errores 
-    return lista_errores 
+    formatoErrores = '{\n'
+
+    for i in range(len(lista_errores)):
+        error = lista_errores[i]
+        formatoErrores += error.operar(i+1)
+        if i != len(lista_errores)-1:
+            formatoErrores += ',\n'
+        else:
+            formatoErrores += '\n'
+
+    formatoErrores += '}'
+    return lista_errores
+
+def ArchivoError():
+    nombre = "ListaErrores"+".txt"
+    with open(nombre, 'w') as f:
+        f.write(getErrores())
