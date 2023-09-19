@@ -66,7 +66,7 @@ class Ventana:
             for respuesta in respuestas_Operaciones: 
  
                 if isinstance(respuesta.operar(None), int) or isinstance(respuesta.operar(None), float) == True: 
-                    Resultados += str(f"operacion {Operacion} --> {respuesta.tipo.operar(None)} = {respuesta.operar(None)}\n") 
+                    Resultados += str(f"operacion {Operacion} --> {respuesta.tipo.operar(None)} = {respuesta.operar(None)}\n")
                     print(respuesta.operar(None)) 
                     Operacion += 1 
 

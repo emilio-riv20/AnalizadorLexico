@@ -1,7 +1,7 @@
 from Abstracto.Lexema import * 
 from Abstracto.Numero import * 
 from Instrucciones.Aritmetica import *
-from Texto import * 
+from Instrucciones.Texto import * 
 from Instrucciones.Trigonometria import *
 from Error import * 
 
@@ -19,6 +19,8 @@ Reservados = {
     'RSENO'             : 'seno',
     'RCOSENO'           : 'coseno',
     'RTANGENTE'         : 'tangente',
+    'RRAIZ'             : 'raiz',
+    'RINVERSO'          : 'inverso',
     'COMA'              : ',', 
     'PUNTO'             : '.', 
     'DPUNTOS'           : ':', 
@@ -143,19 +145,19 @@ def armar_numero(cadena):
 def operar(): 
     global lista_lexemas 
     global instrucciones 
-    operacion = '' 
+    operacion = ''
     n1 = '' 
     n2 = '' 
  
     while lista_lexemas: 
         lexema = lista_lexemas.pop(0) 
-        if lexema.operar(None) == 'operacion': 
-            operacion = lista_lexemas.pop(0) 
-        elif lexema.operar(None) == 'valor1': 
-            n1 = lista_lexemas.pop(0) 
+        if lexema.operar(None) == 'operacion' or lexema.operar(None) == 'Operacion': 
+            operacion = lista_lexemas.pop(0)
+        elif lexema.operar(None) == 'valor1' or lexema.operar(None) == 'Valor1': 
+            n1 = lista_lexemas.pop(0)
             if n1.operar(None) == '[': 
                 n1 = operar()
-        elif lexema.operar(None) ==  'valor2': 
+        elif lexema.operar(None) ==  'valor2' or lexema.operar(None) ==  'Valor2': 
             n2 = lista_lexemas.pop(0) 
             if n2.operar(None) == '[': 
                 n2 = operar() 
