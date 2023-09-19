@@ -14,8 +14,18 @@ class Trigonometria(Expression):
         if self.left != None: 
             leftValue = self.left.operar(arbol) 
  
-        if self.tipo.operar(arbol) == 'Seno': 
-            return math.sin(math.radians(leftValue)) 
+        if self.tipo.operar(arbol) == 'seno' or self.tipo.operar(arbol) == 'Seno': 
+            res = math.sin(math.radians(leftValue))
+            res = round(res, 4)
+            return res
+        elif self.tipo.operar(arbol) == 'coseno' or self.tipo.operar(arbol) == 'Coseno': 
+            res = math.cos(math.radians(leftValue))
+            res = round(res, 4)
+            return res
+        elif self.tipo.operar(arbol) == 'tangente' or self.tipo.operar(arbol) == 'Tangente': 
+            res= math.tan(math.radians(leftValue))
+            res = round(res, 4)
+            return res
 
         else: 
             return None 
