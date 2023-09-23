@@ -21,6 +21,11 @@ Reservados = {
     'RTANGENTE'         : 'tangente',
     'RRAIZ'             : 'raiz',
     'RINVERSO'          : 'inverso',
+    'RCONFIGURACION'    : 'Configuraciones', 
+    'RTEXTO'            : 'texto', 
+    'RCOLORFONDONODO'   : 'fondo', 
+    'RCOLORFUENTENODO'  : 'fuente', 
+    'RFORMANODO'        : 'forma', 
     'COMA'              : ',', 
     'PUNTO'             : '.', 
     'DPUNTOS'           : ':', 
@@ -78,8 +83,8 @@ def instruccion(cadena):
  
         elif char == '[' or char == ']': 
             #! Armamos lexema como clase 
-            c = Lexema(char, n_linea, n_columna) 
- 
+            c = Lexema(char, n_linea, n_columna)
+
             lista_lexemas.append(c) 
             cadena = cadena[1:] 
             puntero = 0 
@@ -99,7 +104,7 @@ def instruccion(cadena):
             cadena = cadena[1:] 
             puntero = 0 
         else: 
-            lista_errores.append(Errores(char, n_linea, n_columna)) 
+            lista_errores.append(Errores(char, n_linea, n_columna))
             cadena = cadena[1:] 
             puntero = 0 
             n_columna += 1 
@@ -150,7 +155,7 @@ def operar():
     n2 = '' 
  
     while lista_lexemas: 
-        lexema = lista_lexemas.pop(0) 
+        lexema = lista_lexemas.pop(0)
         if lexema.operar(None) == 'operacion' or lexema.operar(None) == 'Operacion': 
             operacion = lista_lexemas.pop(0)
         elif lexema.operar(None) == 'valor1' or lexema.operar(None) == 'Valor1': 
@@ -162,6 +167,30 @@ def operar():
             if n2.operar(None) == '[': 
                 n2 = operar() 
  
+        if lexema.operar(None)== 'texto': 
+ 
+            tipo = 'texto' 
+            text = lista_lexemas.pop(0) 
+            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
+ 
+        if lexema.operar(None) == 'fondo': 
+ 
+            tipo = 'fondo' 
+            text = lista_lexemas.pop(0) 
+            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
+ 
+        if lexema.operar(None) == 'fuente': 
+ 
+            tipo = 'fuente' 
+            text = lista_lexemas.pop(0) 
+            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
+ 
+        if lexema.operar(None) == 'forma': 
+ 
+            tipo = 'forma' 
+            text = lista_lexemas.pop(0) 
+            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
+
         if operacion and n1 and n2: 
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}: {n2.getColumna()}') 
         elif operacion and n1 and (operacion.operar(None) == 'seno' or operacion.operar(None) == 'coseno' or operacion.operar(None) == 'tangente'):
@@ -190,11 +219,11 @@ def getErrores():
             formatoErrores += ',\n'
         else:
             formatoErrores += '\n'
-
     formatoErrores += '}'
-    return lista_errores
+
+    return formatoErrores
 
 def ArchivoError():
     nombre = "ListaErrores"+".txt"
-    with open(nombre, 'w') as f:
-        f.write(getErrores())
+    with open(nombre, 'w') as archivo:
+        archivo.write(getErrores())

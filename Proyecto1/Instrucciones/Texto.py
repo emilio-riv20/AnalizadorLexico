@@ -17,15 +17,15 @@ class Texto(Expression):
             tipo = self.tipo 
  
         if tipo == "texto": 
+            return tipo
+ 
+        elif tipo == "fondo": 
             return tipo 
  
-        elif tipo == "color-fondo-nodo": 
+        elif tipo == "fuente": 
             return tipo 
  
-        elif tipo == "color-fuente-nodo": 
-            return tipo 
- 
-        elif tipo == "forma-nodo": 
+        elif tipo == "forma": 
             return tipo 
  
         else: 

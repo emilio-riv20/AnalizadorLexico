@@ -10,7 +10,7 @@ class Errores(Expression):
         no_ = f'\t\t"No.":{no}\n'
         desc = '\t\t"Descripcion-Token":{\n'
         lex = f'\t\t\t"Lexema": {self.lexema}\n'
-        tipo = '\t\t\t"Tipo": Error\n'
+        tipo = '\t\t\t"Tipo": Error Lexico\n'
         columna = f'\t\t\t"Columna": {self.columna}\n'
         fila = f'\t\t\t"Fila": {self.fila}\n'
         fin = "\t\t}\n"

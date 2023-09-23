@@ -2,7 +2,9 @@ import tkinter
 from tkinter.scrolledtext import ScrolledText
 from tkinter import filedialog, messagebox
 from Analizador import *
-from Analizador import ArchivoError
+from Analizador import ArchivoError, instruccion, operar_ 
+from typing import List, Any 
+from subprocess import check_output 
 
 class Ventana:
     
@@ -11,7 +13,8 @@ class Ventana:
         self.ventana.title("Editor de Texto") 
 
         self.ArchivoAbierto = None
- 
+        self.ejecutado = False #Detector de ejecucion de analisis
+
         self.line_number_bar = tkinter.Text(ventana, width=4, padx=4, takefocus=0, border=0, background='lightgrey', state='disabled') 
         self.line_number_bar.pack(side=tkinter.LEFT, fill=tkinter.Y) 
  
@@ -35,7 +38,7 @@ class Ventana:
         self.file_menu.add_command(label="Salir", command=self.ventana.quit) 
         self.menu_bar.add_command(label="Analizar", command=self.Analizar) 
         self.menu_bar.add_command(label="Errores", command=self.Errores) 
-        self.menu_bar.add_command(label="Graficar", command=self.Grafica)
+        self.menu_bar.add_command(label="Graficar", command=self.gh)
 
         self.file_menu.entryconfigure("Abrir", background="lightgray", foreground="black")
         self.file_menu.entryconfigure("Guardar", background="lightgray", foreground="black")
@@ -54,6 +57,7 @@ class Ventana:
 
     def Analizar(self):
         try: 
+            self.ejecutado = True
             instrucciones = instruccion(self.data) 
             respuestas_Operaciones = operar_() 
  
@@ -70,23 +74,176 @@ class Ventana:
                     print(respuesta.operar(None)) 
                     Operacion += 1 
 
-            messagebox.showinfo("Analisis Exitoso", Resultados) 
+            messagebox.showinfo("Analisis Exitoso", Resultados.lower()) 
         except: 
             messagebox.showinfo("Error", "No se ha ingresado ningun archivo") 
 
     def Errores(self):
-        try:
-            ArchivoError()
-            messagebox.showinfo("Guardado", "Archivo de errores generado con exito")
-        except:
-            messagebox.showerror("Error", "No se ha podido generar el archivo de errores")
-            return
+        if self.ejecutado == False:
+            messagebox.showerror("Error", "No se a ejecutado el analisis")
+        else:
+            try:
+                ArchivoError()
+                messagebox.showinfo("Éxito", "Archivo de errores generado con exito")
+            except:
+                messagebox.showerror("Error", "No se ha podido generar el archivo de errores")
+                return
 
-    def Grafica(self):
-        pass
+    def gh(self): 
+        try: 
+            operar_().clear() 
+ 
+            intrucciones = instruccion(self.data) 
+            operaciones = operar_() 
+ 
+            contenido = "digraph G {\n\n"                           #CREAMOS NUESTRO ARCHIVO CON COMANDOS 
+            r = open("Operaciones.dot", "w", encoding="utf-8") 
+            contenido += str(self.Grafica(operaciones)) 
+            contenido += '\n}' 
+ 
+            r.write(contenido) 
+            r.close() 
+ 
+            print("...............................................................") 
+            print("            ** COMANDOS DE GRAPHVIZ **               ") 
+            print("") 
+            print(contenido) 
+            print("...............................................................") 
+            print("") 
+            print("FIN.....") 
+            # ! dot -Tpng Operaciones.dot -o Operaciones.png 
+            # ! Generar desde aquí la imagen 
+ 
+        except Exception as e: 
+            messagebox.showinfo("Se produjo un error: ",str(e)) 
+            messagebox.showinfo("Mensaje", f"Error al generar el archivo de salida, Verificar el Archivo de entrada.") 
+        else: 
+            messagebox.showinfo("Mensaje", "Grafica generada con exito") 
+            operaciones.clear() 
+            intrucciones.clear() 
+
+    def Grafica(Operaciones):
+        Titulo = "" 
+        colorNodo = "" 
+        fuenteNodo = "" 
+        formaNodo = ""
+        try: 
+            print('---------------------------------------------') 
+            for respuesta in Operaciones: 
+                if isinstance(respuesta.operar(None), int) or isinstance(respuesta.operar(None), float) == True: 
+                    pass 
+                else: 
+                    temporal = str(respuesta.texto.operar(None)).lower() 
+                    print(respuesta.texto.operar(None)) 
+                    print(respuesta.ejecutarT()) 
+                    if respuesta.ejecutarT() == "texto":  # Podemos recibir cualquier texto 
+                        Titulo = str(respuesta.texto.operar(None)) 
+                    if respuesta.ejecutarT() == "fondo":  # Vericar el color del nodo a asignar 
+                        if temporal == ("amarillo" or "yellow"): 
+                            temporal = "yellow" 
+                            colorNodo = temporal 
+                        elif temporal == ("verde" or "green"): 
+                            temporal = "green" 
+                            colorNodo = temporal 
+                        elif temporal == ("azul" or "blue"): 
+                            temporal = "blue" 
+                            colorNodo = temporal 
+                        elif temporal == ("rojo" or "red"): 
+                            temporal = "red" 
+                            colorNodo = temporal 
+                        elif temporal == ("morado" or "purple"): 
+                            temporal = "purple" 
+                            colorNodo = temporal 
+                        elif temporal == ("negro" or "black"): 
+                            temporal = "black" 
+                            colorNodo = temporal 
+
+
+                    if respuesta.ejecutarT() == "fuente":  # Vericar la fuente del nodo a asignar 
+ 
+                        if temporal == ("amarillo" or "yellow"): 
+                            temporal = "yellow" 
+                            fuenteNodo = temporal 
+                        elif temporal == ("verde" or "green"): 
+                            temporal = "green" 
+                            fuenteNodo = temporal 
+                        elif temporal == ("azul" or "blue"): 
+                            temporal = "blue" 
+                            fuenteNodo = temporal 
+                        elif temporal == ("rojo" or "red"): 
+                            temporal = "red" 
+                            fuenteNodo = temporal 
+                        elif temporal == ("morado" or "purple"): 
+                            temporal = "purple" 
+                            fuenteNodo = temporal 
+                        elif temporal == ("negro" or "black"): 
+                            temporal = "black" 
+                            fuenteNodo = temporal 
+ 
+                    if respuesta.ejecutarT() == "forma":  # Vericar el formato de nodo a asignar 
+                        if temporal == ("circulo" or "circle"): 
+                            temporal = "circle" 
+                            formaNodo = temporal 
+                        elif temporal == ("cuadrado" or "square"): 
+                            temporal = "square" 
+                            formaNodo = temporal 
+                        elif temporal == ("triangulo" or "triangle"): 
+                            temporal = "triangle" 
+                            formaNodo = temporal 
+                        elif temporal == ("rectangulo" or "box"): 
+                            temporal = "box" 
+                            formaNodo = temporal 
+                        elif temporal == ("elipse" or "ellipse"): 
+                            temporal = "ellipse" 
+                            formaNodo = temporal 
+ 
+            temporal = '' 
+            CnumIzquierdo = 0 
+            CnumDerecho = 0 
+            Crespuesta = 0 
+            Ctotal = 0 
+ 
+            text = "" 
+            text += f"\tnode [shape={formaNodo}]\n" 
+            # text += f"\tnode [shape=box];\n" 
+ 
+            text += f"\tnodo0 [label = \"{Titulo}\"]\n" 
+            text += f"\tnodo0" + "[" + f"fontcolor = {fuenteNodo}" + "]\n" 
+            # text += f"\tnodo0 [label = \"CambiarPorTexto\"]\n"    # ESTE DEJAR 
+ 
+            for respuesta in Operaciones: 
+                CnumIzquierdo += 1 
+                CnumDerecho += 1 
+                Crespuesta += 1 
+                Ctotal += 1 
+ 
+                if isinstance(respuesta.operar(None), int) or isinstance(respuesta.operar(None), float) == True: 
+ 
+                    text += f"\tnodoRespuesta{Crespuesta}" + "[" + f"style = filled" + f",fillcolor = {colorNodo}" + f",fontcolor = {fuenteNodo}" + "]\n" 
+                    text += f"\tnodoIzqu{CnumIzquierdo}" + "[" + f"style = filled" + f",fillcolor = {colorNodo}" + f",fontcolor = {fuenteNodo}" + "]\n" 
+                    text += f"\tnodoDere{CnumDerecho}" + "[" + f"style = filled" + f",fillcolor = {colorNodo}" + f",fontcolor = {fuenteNodo}" + "]\n" 
+                    text += f"\tnodoT{Ctotal}" + "[" + f"style = filled" + f",fillcolor = {colorNodo}" + f",fontcolor = {fuenteNodo}" + "]\n" 
+ 
+                    text += f"\tnodoRespuesta{Crespuesta}" + f"[label = \"{str(respuesta.tipo.operar(None))}: " + "\"]\n" 
+                    text += f"\tnodoIzqu{CnumIzquierdo}" + "[label = \"Valor1: " + f" {str(respuesta.left.operar(None))} " + "\"]\n" 
+                    text += f"\tnodoDere{CnumDerecho}" + "[label = \"Valor2: " + f" {str(respuesta.right.operar(None))} " + "\"]\n" 
+ 
+                    text += f"\tnodoRespuesta{Crespuesta} -> nodoIzqu{CnumIzquierdo}\n" 
+                    text += f"\tnodoRespuesta{Crespuesta} -> nodoDere{CnumDerecho}\n" 
+ 
+                    text += f"\tnodoT{Ctotal}" + f"[label = \"{respuesta.operar(None)}" + "\"]\n" 
+                    text += f"\tnodoT{Ctotal} -> nodoRespuesta{Crespuesta}\n" 
+ 
+                else: 
+                    pass 
+ 
+            return text 
+        except Exception as e: 
+            messagebox.showinfo("Se produjo un error: ",str(e)) 
+            messagebox.showinfo("Mensaje", "Error en los comandos de Graphviz") 
 
     def Abrir(self):
-        archivo = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")],title="Seleccionar archivo de texto")
+        archivo = filedialog.askopenfilename(filetypes=[("Archivos Json", "*.json")],title="Seleccionar archivo de texto")
         if archivo:
                 with open(archivo, "r") as entrada:
                     contenido = entrada.read()
@@ -97,7 +254,7 @@ class Ventana:
         self.data = self.text_widget.get(1.0, tkinter.END)
 
     def GuardarComo(self):
-        archivo = filedialog.asksaveasfile(defaultextension=".txt",filetypes=[("Archivos de texto", "*.txt")],title="Guardar Como")
+        archivo = filedialog.asksaveasfile(defaultextension=".txt",filetypes=[("Archivos Json", "*.json")],title="Guardar Como")
         texto = self.text_widget.get(1.0, tkinter.END)
         if archivo:
             archivo.write(texto)
@@ -106,8 +263,14 @@ class Ventana:
     def Guardar(self):
         texto = self.text_widget.get(1.0, tkinter.END)
         if self.ArchivoAbierto:
-            with open(self.ArchivoAbierto, "w")as salida:
-                salida.write(texto)
+                    try:
+                        with open(self.ArchivoAbierto, 'w') as file:
+                            file.write(self.text_widget.get(1.0, tkinter.END))
+                            messagebox.showinfo("Guardado", "Archivo guardado con exito")
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Ocurrió un error al guardar el archivo: {str(e)}")
+        else:
+            self.GuardarComo()
 
 if __name__ == '__main__':
     ventana = tkinter.Tk() 

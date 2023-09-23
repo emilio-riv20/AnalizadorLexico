@@ -12,7 +12,7 @@ class Aritmetica(Expression):
         leftValue = '' 
         rightValue = '' 
         if self.left != None: 
-            leftValue = self.left.operar(arbol) 
+            leftValue = self.left.operar(arbol)
         if self.right != None: 
             rightValue = self.right.operar(arbol) 
 
