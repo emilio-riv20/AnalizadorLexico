@@ -210,18 +210,18 @@ def operar_():
  
 def getErrores(): 
     global lista_errores 
-    formatoErrores = '{\n'
+    formato = '{\n'
 
     for i in range(len(lista_errores)):
         error = lista_errores[i]
-        formatoErrores += error.operar(i+1)
+        formato += error.operar(i+1)
         if i != len(lista_errores)-1:
-            formatoErrores += ',\n'
+            formato += ',\n'
         else:
-            formatoErrores += '\n'
-    formatoErrores += '}'
+            formato += '\n'
+    formato += '}'
 
-    return formatoErrores
+    return formato
 
 def ArchivoError():
     nombre = "ListaErrores"+".txt"

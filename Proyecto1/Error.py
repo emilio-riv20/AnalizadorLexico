@@ -18,6 +18,6 @@ class Errores(Expression):
  
     def getColumna(self): 
         return super().getColumna() 
- 
+
     def getFila(self): 
         return super().getFila()

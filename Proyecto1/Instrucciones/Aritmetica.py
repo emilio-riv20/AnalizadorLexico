@@ -17,19 +17,29 @@ class Aritmetica(Expression):
             rightValue = self.right.operar(arbol) 
 
         if self.tipo.operar(arbol) == 'suma' or self.tipo.operar(arbol) == 'Suma': 
-            return leftValue + rightValue 
+            res = leftValue + rightValue
+            res = round(res, 4)
+            return res
         
         elif self.tipo.operar(arbol) == 'resta' or self.tipo.operar(arbol) == 'Resta': 
-            return leftValue - rightValue 
+            res = leftValue - rightValue
+            res = round(res, 4)
+            return res
         
         elif self.tipo.operar(arbol) == 'multiplicacion' or self.tipo.operar(arbol) == 'Multiplicacion':
-            return leftValue * rightValue
+            res = leftValue * rightValue
+            res = round(res, 4)
+            return res
         
         elif self.tipo.operar(arbol) == 'division' or self.tipo.operar(arbol) == 'Division':
-            return leftValue / rightValue
+            res = leftValue / rightValue
+            res = round(res, 4)
+            return res
         
         elif self.tipo.operar(arbol) == 'potencia' or self.tipo.operar(arbol) == 'Potencia':
-            return leftValue ** rightValue
+            res = leftValue ** rightValue
+            res = round(res,4)
+            return res
         
         elif self.tipo.operar(arbol) == 'mod' or self.tipo.operar(arbol) == 'Mod':
             return leftValue % rightValue

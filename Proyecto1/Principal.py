@@ -3,8 +3,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter import filedialog, messagebox
 from Analizador import *
 from Analizador import ArchivoError, instruccion, operar_ 
-from typing import List, Any 
-from subprocess import check_output 
+
 
 class Ventana:
     
