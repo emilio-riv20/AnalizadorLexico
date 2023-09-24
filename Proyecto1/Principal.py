@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from tkinter import filedialog, messagebox
 from Analizador import *
-from Analizador import ArchivoError, instruccion, operar_ 
+from Analizador import ArchivoError, instruccion, operar_, limpiarLista, limpiarListaErrores
 
 
 class Ventana:
@@ -51,6 +51,8 @@ class Ventana:
 
     def Analizar(self):
         try: 
+            limpiarLista()
+            limpiarListaErrores()
             instrucciones = instruccion(self.data) 
             respuestas_Operaciones = operar_() 
  
@@ -94,7 +96,7 @@ class Ventana:
             r = open("Operaciones.dot", "w", encoding="utf-8") 
             contenido += str(self.Grafica(operaciones)) 
             contenido += '\n}' 
- 
+
             r.write(contenido) 
             r.close() 
  
@@ -237,14 +239,13 @@ class Ventana:
             messagebox.showinfo("Mensaje", "Error en los comandos de Graphviz") 
 
     def Abrir(self):
-        archivo = filedialog.askopenfilename(filetypes=[("Archivos Json", "*.json")],title="Seleccionar archivo de texto")
+        archivo = filedialog.askopenfilename(filetypes=[("Archivos Json", "*.json"),("Archivos de texto", "*.txt")],title="Seleccionar archivo de texto")
         if archivo:
                 with open(archivo, "r") as entrada:
                     contenido = entrada.read()
                     self.Texto.delete(1.0, tkinter.END)
                     self.Texto.insert(tkinter.END, contenido)
                     self.ArchivoAbierto = archivo
-                #self.ActualizarLineas()
         self.data = self.Texto.get(1.0, tkinter.END)
 
     def GuardarComo(self):

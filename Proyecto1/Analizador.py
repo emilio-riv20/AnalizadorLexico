@@ -41,12 +41,15 @@ global n_linea
 global n_columna 
 global instrucciones 
 global lista_lexemas 
+global lista_errores
+global lista_Graphiz
 
 n_linea = 1 
 n_columna = 1 
 lista_lexemas = [] 
 instrucciones = [] 
-lista_errores = [] 
+lista_errores = []
+lista_Graphiz = [] 
 
 def instruccion(cadena): 
     global n_linea 
@@ -166,30 +169,6 @@ def operar():
             n2 = lista_lexemas.pop(0) 
             if n2.operar(None) == '[': 
                 n2 = operar() 
- 
-        if lexema.operar(None)== 'texto': 
- 
-            tipo = 'texto' 
-            text = lista_lexemas.pop(0) 
-            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
- 
-        if lexema.operar(None) == 'fondo': 
- 
-            tipo = 'fondo' 
-            text = lista_lexemas.pop(0) 
-            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
- 
-        if lexema.operar(None) == 'fuente': 
- 
-            tipo = 'fuente' 
-            text = lista_lexemas.pop(0) 
-            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
- 
-        if lexema.operar(None) == 'forma': 
- 
-            tipo = 'forma' 
-            text = lista_lexemas.pop(0) 
-            return Texto(text, tipo ,  f'Inicio: {text.getFila()}', f'Fin: {text.getColumna()}') 
 
         if operacion and n1 and n2: 
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}: {n2.getColumna()}') 
@@ -197,6 +176,20 @@ def operar():
             return Trigonometria(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
     return None 
  
+def lexemas_grafico():
+    global lista_lexemas
+
+    for i in range(len(lista_lexemas)):
+        lexema = lista_lexemas[i]
+        if lexema.operar(None) == 'texto':
+            lista_Graphiz.append(lista_lexemas[i+1].operar(None))
+        if lexema.operar(None) == 'fondo':
+            lista_Graphiz.append(lista_lexemas[i+1].operar(None))
+        elif lexema.operar(None) == 'fuente':
+            lista_Graphiz.append(lista_lexemas[i+1].operar(None))
+        elif lexema.operar(None) == 'forma':
+            lista_Graphiz.append(lista_lexemas[i+1].operar(None))
+
 def operar_(): 
     global instrucciones 
     while True: 
@@ -208,6 +201,14 @@ def operar_():
  
     return instrucciones 
  
+def limpiarLista():
+    instrucciones.clear()
+
+def limpiarListaErrores():
+    global n_linea
+    lista_errores.clear()
+    n_linea = 1
+
 def getErrores(): 
     global lista_errores 
     formato = '{\n'
