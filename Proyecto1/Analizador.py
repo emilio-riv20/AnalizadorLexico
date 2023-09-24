@@ -122,9 +122,9 @@ def armar_lexema(cadena):
     for char in cadena: 
         puntero += char 
         if char == '\"': 
-            return lexema, cadena[len(puntero):]    #! si encuentra una  " termino de leer el token 
+            return lexema, cadena[len(puntero):]
         else: 
-            lexema += char   #! creamos nuestros Token 
+            lexema += char  
     return None, None 
  
 def armar_numero(cadena): 
@@ -143,7 +143,7 @@ def armar_numero(cadena):
             else: 
                 return int(numero), cadena[len(puntero)-1:] 
         else: 
-            if char != ',': #! si no es una coma lo agregamos al numero 
+            if char != ',':
                 numero += char 
     return None, None 
 
