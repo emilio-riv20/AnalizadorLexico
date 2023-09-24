@@ -10,7 +10,7 @@ Esta es la clase "Lexema"
 <p align="center">
   <img src="Img8.png">
 </p>
-Esta es la clase "Lexema"
+Esta es la clase "Numero"
 <p align="center">
   <img src="Img9.png">
 </p>
@@ -37,6 +37,13 @@ Ahora pasamos a la clase "Trigonometria".
   <img src="Img13.png">
 </p>
 Esta clase es parecida a la de "Aritmetica", solo que esta en vez de recibir 2 este solo recibe 1 valor, y valida que vengan funciones trigonometricas se Seno, Coseno y Tangente, redondeando los resultados a 4 decimales, para luego obtener las filas y columnas de donde se encontró la función trigonométrica.
+
+Ahora miremos la clase "Error"
+<p align="center">
+  <img src="Img23.png">
+</p>
+
+En esta clase lo que hacemos es dar la estructura de como se verá el archivo de errores.
 
 Ahora, con las funciones básicas de nuestro analizador, pasamos a ver el código que se encarga de juntar todo esto para leer los datos de nuestro archivo.
 <p align="center">
@@ -76,4 +83,37 @@ Ahora entramos al método que nos permitirá armar los números, para ello lo pr
 
 Ahora entramos a un nuevo método llamado "operar", el cual, se encargará de hacer las operaciones correspodientes con los valores que vengan, pero primero, tenemos que leer los lexemas, para ello usamos diferentes condicionales, si nuestro lexema lee "operacion" u "Operacion", almacenaremos la operacion en la lista de lexemas, si lee "valor1", "Valor1", "valor2" o "Valor2", sabrá que son numeros u operaciones anidadas, dependiendo si lee el número o un corchete de abertura.
 
-Luego seguimos haciendo validaciones, pero esta vez para las configuraciones que puedan venir para crear la gráfica y por último, 
+Luego seguimos haciendo validaciones, pero esta vez para las configuraciones que puedan venir para crear la gráfica y por último, pasamos a hacer las operaciones, usando la clase "Aritmetica" o la clase "Trigonometria", dependiendo de los datos que vengan.
+
+<p align="center">
+  <img src="Img22.png">
+</p>
+Para terminar con la clase "Analizador", tenemos estos 3 métodos, el primero que es "operar_" funciona para llevar a cabo el metodo que vimos anteriormente que se llama "operar", luego esta el método "getErrores", este se encarga de tomar los errores léxicos que fue obteniendo durante la lectura, para darles un formato y retormar este mismo, por último, esta el método "ArchivoError", el cualse encarga de generar el archivo de errores por medio de los errores obteniedos.
+
+Ahora, con todas las funcionalidades de nuestro analizador, podemos dar paso a la parte gráfica de este.
+
+<p align="center">
+  <img src="Img24.png">
+</p>
+<p align="center">
+  <img src="Img25.png">
+</p>
+
+En esta parte del código de la clase "Ventana", tenemos método que inicializa las ventana, los botones, el texto y la barra de menú, por medio de la libreria tkinter.
+
+<p align="center">
+  <img src="Img26.png">
+</p>
+Este método se ejecutará al dar clic al botón de analizar, y se encargará de hacer las operaciones correspondientes, por medio de las demas clases que creamos para el analizador.
+
+<p align="center">
+  <img src="Img27.png">
+</p>
+
+El método "Errores" se ejecutará al dar clic al botón de error, y creará el archivo de errores con los errores obtenidos durante el análisis.
+
+<p align="center">
+  <img src="Img28.png">
+</p>
+
+Por último, tenemos los métodos de "Abrir", "GuardarComo", "Guardar", el primero se encarga de mostrar una ventana que funciona como buscador de archivos, el segundo tiene la funcion de guardar como un nuevo archivo el texto que tengamos en nuestro cuadro de texto, y el último, guarda lo que tengamos en nuestro cuadro de texto, en la misma ruta donde se encuentra el archivo, y si este no existe, damos paso al método de "GuardarComo".
