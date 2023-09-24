@@ -1,4 +1,5 @@
 import tkinter 
+from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from tkinter import filedialog, messagebox
 from Analizador import *
@@ -10,20 +11,27 @@ class Ventana:
     def __init__(self, ventana): 
         self.ventana = ventana 
         self.ventana.title("Editor de Texto") 
-
+        self.ventana.geometry("700x500")
+        self.ventana.resizable(0,0)
         self.ArchivoAbierto = None
         self.ejecutado = False #Detector de ejecucion de analisis
 
-        self.line_number_bar = tkinter.Text(ventana, width=4, padx=4, takefocus=0, border=0, background='lightgrey', state='disabled') 
-        self.line_number_bar.pack(side=tkinter.LEFT, fill=tkinter.Y) 
- 
-        self.text_widget = ScrolledText(self.ventana, wrap=tkinter.WORD) 
-        self.text_widget.pack(expand=True, fill='both') 
- 
-        self.text_widget.bind('<Key>', self.ActualizarLineas) 
-        self.text_widget.bind('<MouseWheel>', self.ActualizarLineas) 
- 
-        self.current_line = 1 
+        self.botonA = tkinter.Button(ventana, text="Analizar", command=self.Analizar, background="lightblue")
+        self.botonA.place(x=10, y=5)
+
+        self.botonE = tkinter.Button(ventana, text="Errores", command=self.Errores, background="lightblue")
+        self.botonE.place(x=80, y=5)
+
+        self.botonG = tkinter.Button(ventana, text="Graficar", command=self.gh, background="lightblue")
+        self.botonG.place(x=150, y=5)
+
+        self.Texto = tkinter.Text(ventana, height=10, width=40, wrap=tkinter.WORD)
+        barra = tkinter.Scrollbar(ventana, command=self.Texto.yview)
+        self.Texto.config(yscrollcommand=barra.set)
+        self.Texto.place(x=10, y=10)
+
+        self.Texto.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=True, padx=10, pady=40)
+        barra.pack(side=tkinter.RIGHT, fill=tkinter.Y)
  
         self.menu_bar = tkinter.Menu(ventana) 
         self.ventana.config(menu=self.menu_bar) 
@@ -35,28 +43,14 @@ class Ventana:
         self.file_menu.add_command(label="Guardar Como", command=self.GuardarComo) 
         self.file_menu.add_separator() 
         self.file_menu.add_command(label="Salir", command=self.ventana.quit) 
-        self.menu_bar.add_command(label="Analizar", command=self.Analizar) 
-        self.menu_bar.add_command(label="Errores", command=self.Errores) 
-        self.menu_bar.add_command(label="Graficar", command=self.gh)
 
         self.file_menu.entryconfigure("Abrir", background="lightgray", foreground="black")
         self.file_menu.entryconfigure("Guardar", background="lightgray", foreground="black")
         self.file_menu.entryconfigure("Guardar Como", background="lightgray", foreground="black")
         self.file_menu.entryconfigure("Salir", background="lightgray", foreground="black")
- 
-    def ActualizarLineas(self, event=None): 
-        line_count = self.text_widget.get('1.0', tkinter.END).count('\n') 
-        if line_count != self.current_line: 
-            self.line_number_bar.config(state=tkinter.NORMAL) 
-            self.line_number_bar.delete(1.0, tkinter.END) 
-            for line in range(1, line_count + 1): 
-                self.line_number_bar.insert(tkinter.END, f"{line}\n") 
-            self.line_number_bar.config(state=tkinter.DISABLED) 
-            self.current_line = line_count 
 
     def Analizar(self):
         try: 
-            self.ejecutado = True
             instrucciones = instruccion(self.data) 
             respuestas_Operaciones = operar_() 
  
@@ -72,6 +66,7 @@ class Ventana:
                     Resultados += str(f"operacion {Operacion} --> {respuesta.tipo.operar(None)} = {respuesta.operar(None)}\n")
                     print(respuesta.operar(None)) 
                     Operacion += 1 
+                    self.ejecutado = True
 
             messagebox.showinfo("Analisis Exitoso", Resultados.lower()) 
         except: 
@@ -246,25 +241,25 @@ class Ventana:
         if archivo:
                 with open(archivo, "r") as entrada:
                     contenido = entrada.read()
-                    self.text_widget.delete(1.0, tkinter.END)
-                    self.text_widget.insert(tkinter.END, contenido)
+                    self.Texto.delete(1.0, tkinter.END)
+                    self.Texto.insert(tkinter.END, contenido)
                     self.ArchivoAbierto = archivo
-                self.ActualizarLineas()
-        self.data = self.text_widget.get(1.0, tkinter.END)
+                #self.ActualizarLineas()
+        self.data = self.Texto.get(1.0, tkinter.END)
 
     def GuardarComo(self):
         archivo = filedialog.asksaveasfile(defaultextension=".txt",filetypes=[("Archivos Json", "*.json")],title="Guardar Como")
-        texto = self.text_widget.get(1.0, tkinter.END)
+        texto = self.Texto.get(1.0, tkinter.END)
         if archivo:
             archivo.write(texto)
             archivo.close()
 
     def Guardar(self):
-        texto = self.text_widget.get(1.0, tkinter.END)
+        texto = self.Texto.get(1.0, tkinter.END)
         if self.ArchivoAbierto:
                     try:
                         with open(self.ArchivoAbierto, 'w') as file:
-                            file.write(self.text_widget.get(1.0, tkinter.END))
+                            file.write(self.Texto.get(1.0, tkinter.END))
                             messagebox.showinfo("Guardado", "Archivo guardado con exito")
                     except Exception as e:
                         messagebox.showerror("Error", f"Ocurrió un error al guardar el archivo: {str(e)}")
