@@ -51,6 +51,7 @@ class Ventana:
 
     def Analizar(self):
         try: 
+            self.ejecutado = True
             limpiarLista()
             limpiarListaErrores()
             instrucciones = instruccion(self.data) 
@@ -68,7 +69,7 @@ class Ventana:
                     Resultados += str(f"operacion {Operacion} --> {respuesta.tipo.operar(None)} = {respuesta.operar(None)}\n")
                     print(respuesta.operar(None)) 
                     Operacion += 1 
-                    self.ejecutado = True
+                    
 
             messagebox.showinfo("Analisis Exitoso", Resultados.lower()) 
         except: 
